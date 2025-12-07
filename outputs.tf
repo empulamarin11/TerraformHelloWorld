@@ -1,8 +1,11 @@
-# outputs.tf - Lo que Terraform nos mostrará
-
 output "application_url" {
   value       = "http://${aws_eip.public_ip.public_ip}"
-  description = "URL para acceder a tu aplicación"
+  description = "URL para acceder a tu aplicación Hola Mundo"
+}
+
+output "public_ip" {
+  value       = aws_eip.public_ip.public_ip
+  description = "IP pública del servidor"
 }
 
 output "instance_id" {
@@ -10,7 +13,12 @@ output "instance_id" {
   description = "ID de la instancia EC2"
 }
 
-output "public_ip" {
-  value       = aws_eip.public_ip.public_ip
-  description = "IP pública de la instancia"
+output "vpc_id" {
+  value       = aws_vpc.main.id
+  description = "ID de la VPC"
+}
+
+output "security_group_id" {
+  value       = aws_security_group.web_sg.id
+  description = "ID del Security Group"
 }
