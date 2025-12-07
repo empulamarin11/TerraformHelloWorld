@@ -1,18 +1,30 @@
 #!/bin/bash
-# Actualizar el sistema
-yum update -y
+# user_data.sh - Script que se ejecuta al iniciar la instancia
+
+echo "=== Iniciando configuración ==="
+
+# Actualizar sistema
+sudo yum update -y
 
 # Instalar Docker
-amazon-linux-extras install docker -y
-service docker start
-systemctl enable docker
+sudo amazon-linux-extras install docker -y
+sudo service docker start
+sudo systemctl enable docker
 
-# Instalar docker-compose
-curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
+# Agregar usuario a grupo docker
+sudo usermod -a -G docker ec2-user
 
-# Descargar la imagen de Docker Hub
-docker pull erick1109/hello-world-app:v1
+# Descargar imagen de Docker Hub
+echo "Descargando imagen: erick1109/hello-world-app:v1"
+sudo docker pull erick1109/hello-world-app:v1
 
-# Ejecutar el contenedor
-docker run -d -p 80:80 --name hello-world-app erick1109/hello-world-app:v1
+# Ejecutar contenedor
+echo "Ejecutando contenedor..."
+sudo docker run -d \
+  --name hello-world-app \
+  -p 80:80 \
+  --restart always \
+  erick1109/hello-world-app:v1
+
+echo "=== Configuración completada ==="
+echo "Aplicación disponible en el puerto 80"

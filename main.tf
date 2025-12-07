@@ -1,4 +1,5 @@
-# Configuración del proveedor AWS
+# main.tf - Versión SIMPLIFICADA para empezar
+
 terraform {
   required_providers {
     aws = {
@@ -9,76 +10,31 @@ terraform {
 }
 
 provider "aws" {
-  region = var.aws_region
+  region = "us-east-1"
 }
 
-# Recursos de red
-resource "aws_vpc" "main" {
-  cidr_block = var.vpc_cidr
-
-  tags = {
-    Name = "main-vpc"
-  }
-}
-
-resource "aws_subnet" "main" {
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = var.subnet_cidr
-  availability_zone = "${var.aws_region}a"
-
-  tags = {
-    Name = "main-subnet"
-  }
-}
-
-resource "aws_internet_gateway" "main" {
-  vpc_id = aws_vpc.main.id
-
-  tags = {
-    Name = "main-igw"
-  }
-}
-
-resource "aws_route_table" "main" {
-  vpc_id = aws_vpc.main.id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.main.id
-  }
-
-  tags = {
-    Name = "main-rt"
-  }
-}
-
-resource "aws_route_table_association" "main" {
-  subnet_id      = aws_subnet.main.id
-  route_table_id = aws_route_table.main.id
-}
-
-# Grupo de seguridad
+# 1. Security Group (Firewall)
 resource "aws_security_group" "web_sg" {
-  name        = "web-sg"
-  description = "Allow HTTP and SSH traffic"
-  vpc_id      = aws_vpc.main.id
+  name        = "hello-world-sg"
+  description = "Permitir HTTP y SSH"
 
+  # HTTP desde cualquier lugar
   ingress {
-    description = "HTTP"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # SSH solo desde tu IP (cambia esto después)
   ingress {
-    description = "SSH"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # En producción, restringir a tu IP
+    cidr_blocks = ["0.0.0.0/0"]  # CAMBIAR ESTO DESPUÉS
   }
 
+  # Salida a internet
   egress {
     from_port   = 0
     to_port     = 0
@@ -87,38 +43,39 @@ resource "aws_security_group" "web_sg" {
   }
 
   tags = {
-    Name = "web-sg"
+    Name = "hello-world-sg"
   }
 }
 
-# Par de claves (opcional, si quieres acceder por SSH)
-resource "aws_key_pair" "deployer" {
-  key_name   = "deployer-key"
-  public_key = file("~/.ssh/id_rsa.pub") # Asegúrate de tener esta clave pública
-}
-
-# Instancia EC2
-resource "aws_instance" "web" {
-  ami                    = var.ami_id
-  instance_type          = var.instance_type
-  subnet_id              = aws_subnet.main.id
+# 2. Instancia EC2
+resource "aws_instance" "hello_world" {
+  ami           = "ami-0c55b159cbfafe1f0"  # Amazon Linux 2
+  instance_type = "t2.micro"
+  
+  # Usar el Security Group
   vpc_security_group_ids = [aws_security_group.web_sg.id]
-  key_name               = aws_key_pair.deployer.key_name
-
-  # Script de inicialización
-  user_data = file("${path.module}/user_data.sh")
+  
+  # Script que se ejecuta al iniciar
+  user_data = <<-EOF
+              #!/bin/bash
+              # Instalar Docker
+              amazon-linux-extras install docker -y
+              service docker start
+              
+              # Descargar TU imagen de Docker Hub
+              docker pull erick1109/hello-world-app:v1
+              
+              # Ejecutar contenedor
+              docker run -d -p 80:80 erick1109/hello-world-app:v1
+              EOF
 
   tags = {
-    Name = "HelloWorldApp"
+    Name = "Hello-World-App"
   }
 }
 
-# IP elástica
-resource "aws_eip" "web_eip" {
-  instance = aws_instance.web.id
+# 3. IP Pública
+resource "aws_eip" "public_ip" {
+  instance = aws_instance.hello_world.id
   vpc      = true
-
-  tags = {
-    Name = "web-eip"
-  }
 }
