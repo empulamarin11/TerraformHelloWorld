@@ -20,7 +20,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}  # ← NUEVA LÍNEA
+        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
         aws-region: ${{ env.AWS_REGION }}
     
     - name: Setup Terraform
@@ -33,4 +33,4 @@ jobs:
       run: terraform apply -auto-approve
     
     - name: Get Application URL
-      run: echo "URL=$(terraform output -raw load_balancer_url)" >> $GITHUB_OUTPUT
+      run: echo "URL=$(terraform output -raw load_balancer_url)" >> $GITHUB_ENV
