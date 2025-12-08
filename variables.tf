@@ -1,77 +1,77 @@
 variable "aws_region" {
-  description = "Región de AWS"
+  description = "AWS Region"
   type        = string
   default     = "us-east-1"
 }
 
 variable "project_name" {
-  description = "Nombre del proyecto"
+  description = "Project Name"
   type        = string
   default     = "hello-world-app"
 }
 
 variable "environment" {
-  description = "Ambiente de despliegue"
+  description = "Deployment environment"
   type        = string
   default     = "dev"
 }
 
 variable "vpc_cidr" {
-  description = "CIDR block para la VPC"
+  description = "CIDR block for the VPC"
   type        = string
   default     = "10.0.0.0/16"
 }
 
 variable "public_subnet_1_cidr" {
-  description = "CIDR block para la primera subred pública"
+  description = "CIDR block for the first public subnet"
   type        = string
   default     = "10.0.1.0/24"
 }
 
 variable "public_subnet_2_cidr" {
-  description = "CIDR block para la segunda subred pública"
+  description = "CIDR block for the second public subnetwork"
   type        = string
   default     = "10.0.2.0/24"
 }
 
 variable "availability_zone_1" {
-  description = "Primera zona de disponibilidad"
+  description = "First availability zone"
   type        = string
   default     = "us-east-1a"
 }
 
 variable "availability_zone_2" {
-  description = "Segunda zona de disponibilidad"
+  description = "Second availability zone"
   type        = string
   default     = "us-east-1b"
 }
 
 variable "instance_type" {
-  description = "Tipo de instancia EC2"
+  description = "EC2 instance type"
   type        = string
   default     = "t2.micro"
 }
 
 variable "docker_image" {
-  description = "Imagen de Docker Hub a desplegar"
+  description = "Docker Hub image to be deployed"
   type        = string
   default     = "erick1109/hello-world-app:v1"
 }
 
 variable "min_instances" {
-  description = "Número mínimo de instancias en Auto Scaling"
+  description = "Minimum number of instances in Auto Scaling"
   type        = number
   default     = 2
 }
 
 variable "max_instances" {
-  description = "Número máximo de instancias en Auto Scaling"
+  description = "Maximum number of instances in Auto Scaling"
   type        = number
   default     = 3
 }
 
 variable "desired_capacity" {
-  description = "Capacidad deseada en Auto Scaling"
+  description = "Desired capacity in Auto Scaling"
   type        = number
   default     = 2
 }

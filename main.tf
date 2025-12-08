@@ -24,7 +24,7 @@ resource "aws_vpc" "main" {
   }
 }
 
-# 2. Subred Pública 1 (us-east-1a)
+# 2. Public Subnetwork 1 (us-east-1a)
 resource "aws_subnet" "public_1" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = var.public_subnet_1_cidr
@@ -37,7 +37,7 @@ resource "aws_subnet" "public_1" {
   }
 }
 
-# 3. Subred Pública 2 (us-east-1b)
+# 3. Public Subnetwork 2 (us-east-1b)
 resource "aws_subnet" "public_2" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = var.public_subnet_2_cidr
@@ -59,7 +59,7 @@ resource "aws_internet_gateway" "igw" {
   }
 }
 
-# 5. Route Table Pública
+# 5. Route Table Public
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
@@ -73,7 +73,7 @@ resource "aws_route_table" "public" {
   }
 }
 
-# 6. Asociar Subredes con Route Table
+# 6. Associate Subnets with Route Table
 resource "aws_route_table_association" "public_1" {
   subnet_id      = aws_subnet.public_1.id
   route_table_id = aws_route_table.public.id
@@ -84,13 +84,13 @@ resource "aws_route_table_association" "public_2" {
   route_table_id = aws_route_table.public.id
 }
 
-# 7. Security Group para ALB
+# 7. Security Group for ALB
 resource "aws_security_group" "alb_sg" {
   name        = "${var.project_name}-alb-sg"
   description = "Security group for Application Load Balancer"
   vpc_id      = aws_vpc.main.id
 
-  # HTTP desde cualquier lugar
+  # HTTP from anywhere
   ingress {
     description = "HTTP"
     from_port   = 80
@@ -99,7 +99,7 @@ resource "aws_security_group" "alb_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # Salida a internet
+  # Internet access
   egress {
     from_port   = 0
     to_port     = 0
@@ -113,13 +113,13 @@ resource "aws_security_group" "alb_sg" {
   }
 }
 
-# 8. Security Group para Instancias
+# 8. Security Group for Instancias
 resource "aws_security_group" "instance_sg" {
   name        = "${var.project_name}-instance-sg"
   description = "Security group for EC2 instances"
   vpc_id      = aws_vpc.main.id
 
-  # HTTP desde ALB
+  # HTTP from ALB
   ingress {
     description     = "HTTP from ALB"
     from_port       = 80
@@ -128,7 +128,7 @@ resource "aws_security_group" "instance_sg" {
     security_groups = [aws_security_group.alb_sg.id]
   }
 
-  # SSH desde cualquier lugar (para práctica, cambiar en producción)
+  # SSH from anywhere (for practice, change in production)
   ingress {
     description = "SSH"
     from_port   = 22
@@ -137,7 +137,7 @@ resource "aws_security_group" "instance_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # Salida a internet
+  # Internet access
   egress {
     from_port   = 0
     to_port     = 0
@@ -151,7 +151,7 @@ resource "aws_security_group" "instance_sg" {
   }
 }
 
-# 9. Application Load Balancer (con 2 subnets)
+# 9. Application Load Balancer (with 2 subnets)
 resource "aws_lb" "web_alb" {
   name               = "${var.project_name}-alb"
   internal           = false
@@ -192,7 +192,7 @@ resource "aws_lb_target_group" "web_tg" {
   }
 }
 
-# 11. Listener del ALB
+# 11. Listener to ALB
 resource "aws_lb_listener" "web_listener" {
   load_balancer_arn = aws_lb.web_alb.arn
   port              = "80"
@@ -237,7 +237,7 @@ resource "aws_launch_template" "web_lt" {
   }
 }
 
-# 13. Auto Scaling Group (con 2 subnets)
+# 13. Auto Scaling Group (with 2 subnets)
 resource "aws_autoscaling_group" "web_asg" {
   name_prefix               = "${var.project_name}-asg-"
   vpc_zone_identifier       = [aws_subnet.public_1.id, aws_subnet.public_2.id]  # 2 subnets

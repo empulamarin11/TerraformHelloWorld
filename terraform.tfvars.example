@@ -1,20 +1,20 @@
 # terraform.tfvars.example
-# Copia este archivo a terraform.tfvars y edita los valores
+# Copy this file to terraform.tfvars and edit the values
 
-# Configuración de AWS
+# AWS Configuration
 aws_region = "us-east-1"
 
-# Configuración del proyecto
+# Project configuration
 project_name = "hello-world-app"
 environment  = "dev"
 
-# Configuración de red
+# Network configuration
 vpc_cidr           = "10.0.0.0/16"
 public_subnet_cidr = "10.0.1.0/24"
 availability_zone  = "us-east-1a"
 
-# Configuración de instancias
+# Instance configuration
 instance_type = "t2.micro"
 
-# Configuración de Docker
+# Docker configuration
 docker_image = "erick1109/hello-world-app:v1"

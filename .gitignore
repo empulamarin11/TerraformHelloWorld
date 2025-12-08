@@ -1,23 +1,23 @@
-# Archivos de Terraform
+# Terraform Archives
 .terraform/
 *.tfstate
 *.tfstate.*
 *.tfplan
 *.terraform.lock.hcl
 
-# Variables sensibles
+# Sensitive variables
 *.tfvars
 *.pem
 *.key
 secrets.tfvars
 
-# Archivos de editor
+# Editor files
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# Archivos de sistema
+# System files
 .DS_Store
 Thumbs.db
 

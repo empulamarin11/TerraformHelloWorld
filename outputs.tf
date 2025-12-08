@@ -1,36 +1,36 @@
 output "load_balancer_dns" {
   value       = aws_lb.web_alb.dns_name
-  description = "DNS del Application Load Balancer"
+  description = "Application Load Balancer DNS"
 }
 
 output "load_balancer_url" {
   value       = "http://${aws_lb.web_alb.dns_name}"
-  description = "URL completa de la aplicación"
+  description = "Full URL of the application"
 }
 
 output "instance_count" {
   value       = aws_autoscaling_group.web_asg.desired_capacity
-  description = "Número de instancias desplegadas"
+  description = "Number of instances deployed"
 }
 
 output "auto_scaling_group_name" {
   value       = aws_autoscaling_group.web_asg.name
-  description = "Nombre del Auto Scaling Group"
+  description = "Name of the Auto Scaling Group"
 }
 
 output "launch_template_id" {
   value       = aws_launch_template.web_lt.id
-  description = "ID del Launch Template"
+  description = "Launch Template ID"
 }
 
 output "target_group_arn" {
   value       = aws_lb_target_group.web_tg.arn
-  description = "ARN del Target Group"
+  description = "Target Group ARN"
 }
 
 output "vpc_id" {
   value       = aws_vpc.main.id
-  description = "ID de la VPC"
+  description = "VPC ID"
 }
 
 output "security_group_ids" {
@@ -38,5 +38,5 @@ output "security_group_ids" {
     alb      = aws_security_group.alb_sg.id
     instance = aws_security_group.instance_sg.id
   }
-  description = "IDs de los Security Groups"
+  description = "Security Group IDs"
 }
